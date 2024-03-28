@@ -8,25 +8,28 @@ class MovieRequest(BaseModel):
     movie_id : int
 
 class Settings(BaseSettings):
-    api_key: str
-    api_access_token: str
-    
+    tmdb_api_key: str
+    tmdb_api_access_token: str
+    tmdb_base_url: str
+
     class Config:
         env_file = ".env"
 
-# TODO:envファイルからトークンとapiキーを取得して使う
+# 環境変数群
 settings = Settings()
-api_key = settings.api_key
-api_access_token = settings.api_access_token
-print(api_key)
+api_key = settings.tmdb_api_key
+api_access_token = settings.tmdb_api_access_token
+tmdb_base_url = settings.tmdb_base_url
 headers = {
     "accept": "application/json",
     "Authorization": f"Bearer {api_access_token}"
 }
 
+# TMDB API公式リファレンス
+# https://developer.themoviedb.org/reference/intro/getting-started
 router = APIRouter()
 
-#TODO: urlの共通部分を抜き出す
+language = 'ja-JA'
 
 
 @router.get('/movie/top', summary="人気top10の映画情報取得")
@@ -37,8 +40,11 @@ def getMovieTop10():
     映画情報を人気(vote_average)順に10件取得します
     """
     # TMDb APIから映画のリストを取得するためのURL（&language=en-US）
-    url = f'https://api.themoviedb.org/3/movie/top_rated?api_key={api_key}&language=en-US&page=1'
-    response = requests.get(url, headers)
+    # page=1としているため、人気TOP10になる
+
+    # TODO:日本語英語を切り替えられるようにする
+    url = f'https://api.themoviedb.org/3/movie/top_rated?api_key={api_key}&language={language}&page=1'
+    response = requests.get(url)
 
     data = response.json()
 
@@ -53,7 +59,7 @@ def getMovieById(movie_id: int ):
     指定したidの映画情報をTMDbから取得します
     お気に入りした映画ピンポイントの取得用
     """
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}"
+    url = f'{tmdb_base_url}/{movie_id}?api_key={api_key}&language={language}'
     response = requests.get(url)
 
     data = response.json()
