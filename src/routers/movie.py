@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException, Request
 import requests
 from pydantic import BaseModel
@@ -16,6 +17,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
 
 # 環境変数群
 settings = Settings()
@@ -36,24 +38,36 @@ language = 'ja-JA'
 
 # TODO:422エラーの詳細が出力されないため、エラーハンドリングを行う
 
+# TODO: Enumにまとめる
+MIN_PAGE = 1
+MAX_PAGE = 500
+
 @router.get('/movie/top', summary="人気top10の映画情報取得")
-def get_popular_movie():
+def get_top_rated_movie(
+        tmdb_repo: Annotated[TmdbRepository,Depends(TmdbRepository)],
+        page: int = 1,
+        language: str = language,
+    ):
     """
     movie
 
     映画情報を人気(vote_average)順に10件取得します
     """
+    # pageは1から500まで 400 Bad Requestが適切
+    if page <= MIN_PAGE | page > MAX_PAGE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Page must between {MIN_PAGE} and {MAX_PAGE}"
+        )
+
     # TMDb APIから映画のリストを取得するためのURL（&language=en-US）
-    # page=1としているため、人気TOP10になる
-
     # TODO:日本語英語を切り替えられるようにする
-    url = f'https://api.themoviedb.org/3/movie/top_rated?api_key={api_key}&language={language}&page=1'
-    response = requests.get(url)
+    response = tmdb_repo.get_top_rated_movies(page, language)
+    print(len(response["results"]))
+    return response
 
-    data = response.json()
 
-    print(data)
-    return {"info": data}
+
 @router.get('/movie/popular')
 def get_popular_movies(
     tmdb_repo: Annotated[TmdbRepository,Depends(TmdbRepository)]
