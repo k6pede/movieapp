@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from .routers import sample, movie
+from .handlers import sample, movie
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
@@ -24,8 +24,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # これは通る settings.middleware.pyに書いても通らない．．．なぜ？
-#@app.middleware("http")
+# @app.middleware("http")
 class CustomMiddleware(BaseHTTPMiddleware):
     # BaseHTTPMiddlewareを継承したクラス内でdispatchをオーバーライドした場合、クラスのインスタンスメソッドになるため、第一引数はselfが必要
     async def dispatch(self, request, call_next):
@@ -34,5 +35,6 @@ class CustomMiddleware(BaseHTTPMiddleware):
         print("##### Middleware-1 Finish #####")
 
         return response
+
 
 app.add_middleware(CustomMiddleware)
