@@ -1,5 +1,5 @@
 migrate:
-	cd src/database/migrations && poetry run alembic upgrade head
+	cd server/app/database/migrations && poetry run alembic upgrade head
 
 setup:
 	@if [ -e .env ] ; then \
@@ -20,3 +20,8 @@ down:
 app-new-migration:
 	docker compose exec app bash -c "cd src/database/migrations && poetry run alembic revision -m '${NAME}'"
 
+echo:
+	docker compose exec app bash -c "printenv"
+
+bash:
+	docker compose exec -it app bash

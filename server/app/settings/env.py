@@ -37,3 +37,5 @@ class Env:
     DB_HOST = _get_env("DB_HOST")
     DB_PORT = _get_env("DB_PORT")
     DB_NAME = _get_env("DB_NAME")
+
+    PYTHONPATH = _get_env("PYTHONPATH")

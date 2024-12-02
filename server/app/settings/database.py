@@ -1,6 +1,6 @@
 # pythonアプリからsqlalchemyを使ってdbに接続するための処理
 
-from src.settings.env import Env
+from env import Env
 from sqlalchemy import create_engine  # type: ignore
 from sqlalchemy.engine import URL  # type: ignore
 from sqlalchemy.orm import declarative_base, sessionmaker  # type: ignore

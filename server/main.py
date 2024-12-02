@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from .handlers import sample, movie
+from app.handlers import sample, movie
 from starlette.middleware.base import BaseHTTPMiddleware
 
 

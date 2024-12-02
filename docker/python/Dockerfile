@@ -1,15 +1,16 @@
 FROM python:3.11
 
-WORKDIR /var/www/app
+WORKDIR /server
 
-COPY ./pyproject.toml /var/www/app/pyproject.toml
-COPY ./poetry.lock /var/www/app/poetry.lock
+# Poetryで依存関係をインストールするために必要なファイルをコピー
+COPY pyproject.toml poetry.lock /server/
 
 RUN pip install --upgrade pip
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
-COPY ./src /var/www/app/src
+# 依存関係をインストールした後にサーバーコードをコピー
+COPY server /server
 
-CMD [ "poetry", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload" ]
+CMD ["poetry", "run", "uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]

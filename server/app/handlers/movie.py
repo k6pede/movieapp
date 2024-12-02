@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 from typing import Annotated, Optional
 
-from src.repositories.tmdb import TmdbRepository
+from server.app.repositories.tmdb import TmdbRepository
 
 
 class MovieRequest(BaseModel):
@@ -37,7 +37,7 @@ language = "ja-JA"
 
 # TODO:422エラーの詳細が出力されないため、エラーハンドリングを行う
 
-# TODO: Enumにまとめる
+# TODO: 定数にまとめる
 MIN_PAGE = 1
 MAX_PAGE = 500
 
