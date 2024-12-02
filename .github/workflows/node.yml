@@ -2,10 +2,7 @@ name: node
 
 on:
   push:
-    branches:
-      - main
-    pull_request:
-    ` - main
+  pull_request:
 
 jobs:
   build:
